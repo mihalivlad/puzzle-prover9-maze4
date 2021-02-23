@@ -1,0 +1,56 @@
+% Saved by Prover9-Mace4 Version 0.5, December 2007.
+
+set(ignore_option_dependencies). % GUI handles dependencies
+
+if(Prover9). % Options for Prover9
+  assign(max_seconds, 60).
+end_if.
+
+if(Mace4).   % Options for Mace4
+  assign(max_seconds, 60).
+end_if.
+
+formulas(assumptions).
+
+knight(x)-> -knave(x) & -spy(x).
+knave(x) -> -knight(x) & -spy(x).
+spy(x) -> -knight(x) & -knave(x).
+-knight(x) & -knave(x) -> spy(x).
+
+knight(A) | knave(A) | spy(A).
+knight(B) | knave(B) | spy(B).
+knight(C) | knave(C) | spy(C).
+
+knight(A) -> -knight(B) & -knight(C).
+knight(B) -> -knight(A) & -knight(C).
+knight(C) -> -knight(B) & -knight(A).
+
+knave(A) -> -knave(B) & -knave(C).
+knave(B) -> -knave(A) & -knave(C).
+knave(C) -> -knave(B) & -knave(A).
+
+spy(A) -> -spy(B) & -spy(C).
+spy(B) -> -spy(A) & -spy(C).
+spy(C) -> -spy(B) & -spy(A).
+
+%I am a knight.
+knight(A) -> knight(A).
+knave(A) -> -knight(A).
+spy(A) -> knight(A) | -knight(A).
+
+knight(B) -> knight(A).
+knave(B) -> -knight(A).
+spy(B) -> knight(A) | -knight(A).
+
+knight(C) -> spy(C).
+knave(C) -> -spy(C).
+spy(C) -> spy(C) | -spy(C).
+
+end_of_list.
+
+formulas(goals).
+
+knight(A) & spy(B) & knave(C).
+
+end_of_list.
+

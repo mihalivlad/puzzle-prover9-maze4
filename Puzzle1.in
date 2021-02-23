@@ -1,0 +1,89 @@
+% Saved by Prover9-Mace4 Version 0.5, December 2007.
+
+set(ignore_option_dependencies). % GUI handles dependencies
+
+if(Prover9). % Options for Prover9
+  assign(max_seconds, 120).
+  assign(max_weight, 10000).
+end_if.
+
+if(Mace4).   % Options for Mace4
+  assign(domain_size, 5).
+  assign(start_size, 5).
+  assign(end_size, 5).
+  assign(max_models, 100000).
+  assign(max_seconds, 60).
+end_if.
+
+formulas(assumptions).
+
+hasJob(x, buyer) | hasJob(x, cashier) | hasJob(x,clerk) | hasJob(x,floorwalker) | hasJob(x,manager).
+hasJob(Ames, x) | hasJob(Brown, x) | hasJob(Conroy, x) | hasJob(Davis, x) | hasJob(Evans, x).
+
+diffPeople(x,y)->diffPeople(y,x).
+-diffPeople(x,x).
+
+diffJobs(x,y)->diffJobs(y,x).
+-diffJobs(x,x).
+
+hasJob(x,y) & hasJob(z,y) -> -diffPeople(x,z).
+hasJob(x,y) & hasJob(x,z) -> -diffJobs(y,z).
+
+(male(x) & -female(x)) | (female(x) & -male(x)).
+
+couple(x,y)->(male(x) & female(y)) | (male(y) & female(x)).
+couple(x,y)->couple(y,x).
+couple(x,y)-> diffPeople(x,y).
+
+bachelor(x) -> -couple(x,y) & male(x).
+onlyBusinessContact(x,y)->onlyBusinessContact(y,x).
+onlyBusinessContact(x,y) -> -couple(x,y).
+couple(x,y) -> -onlyBusinessContact(x,y).
+
+diffJobs(buyer,cashier).
+diffJobs(buyer,clerk).
+diffJobs(buyer,floorwalker).
+diffJobs(buyer,manager).
+diffJobs(cashier,clerk).
+diffJobs(cashier,floorwalker).
+diffJobs(cashier,manager).
+diffJobs(clerk,floorwalker).
+diffJobs(clerk,manager).
+diffJobs(floorwalker,manager).
+
+diffPeople(Ames,Brown).
+diffPeople(Ames,Conroy).
+diffPeople(Ames,Davis).
+diffPeople(Ames,Evans).
+diffPeople(Brown,Conroy).
+diffPeople(Brown,Davis).
+diffPeople(Brown,Evans).
+diffPeople(Conroy,Davis).
+diffPeople(Conroy,Evans).
+diffPeople(Davis,Evans).
+
+female(Ames) & female(Brown) & male(Conroy) & male(Davis) & male(Evans).
+hasJob(x, cashier) & hasJob(y, manager) -> -onlyBusinessContact(x,y).
+hasJob(x, buyer) -> bachelor(x).
+onlyBusinessContact(Evans,Ames).
+onlyBusinessContact(Ames,Evans).
+-bachelor(Conroy).
+
+-hasJob(Conroy, manager).
+-hasJob(Conroy, buyer).
+-hasJob(Conroy,clerk).
+-hasJob(Conroy,cashier).
+
+hasJob(x,clerk) & hasJob(y,cashier) -> couple(x,y).
+-hasJob(Davis, clerk).
+-hasJob(Davis, cashier).
+hasJob(x,clerk) & hasJob(y,cashier)-> -onlyBusinessContact(x,Davis) | -onlyBusinessContact(y,Davis).
+
+end_of_list.
+
+formulas(goals).
+
+hasJob(Ames,manager) & hasJob(Brown,cashier) & hasJob(Conroy,floorwalker) & hasJob(Davis,buyer) & hasJob(Evans,clerk).
+
+end_of_list.
+
